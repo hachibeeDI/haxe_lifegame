@@ -33,11 +33,11 @@ enum Seed {
 
 class GameOfLife
 {
-    static public inline var cellSize = 7;
-    static public inline var numberOfRows = 50;
-    static public inline var numberOfColumns = 50;
-    static public inline var seedProbability = 0.5;
-    static public inline var tickLength = 100;
+    static public inline var cellSize : Int = 7;
+    static public inline var numberOfRows : Int = 80;
+    static public inline var numberOfColumns : Int = 80;
+    static public inline var seedProbability : Float = 0.5;
+    static public inline var tickLength : Int = 100;
 
     public var generation(default, null) : Generation;
 
@@ -62,13 +62,21 @@ class Generation
     public var current_cell_generation(default, null) : Array<Array<Seed>>;
 
     public function new(canvas : CanvasElement, tick_length : Int){
-        this.canvas = canvas;
+        this._initialize_canvas(canvas);
         this.drawing_context = canvas.getContext2d();
         this.tick_length = tick_length;
         this.current_cell_generation = this.seed();
 
         this.draw_grid();
     }
+
+    function _initialize_canvas(canvas : CanvasElement) : Void
+    {
+        this.canvas = canvas;
+        canvas.width = GameOfLife.cellSize * GameOfLife.numberOfColumns;
+        canvas.height = GameOfLife.cellSize * GameOfLife.numberOfRows;
+    }
+
 
     function seed() : Array<Array<Seed>>
     {
