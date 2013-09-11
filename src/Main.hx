@@ -14,7 +14,7 @@ class Main
     {
         //trace((0...10).as_enumerable().list().toString());
         //trace(Enumerator.product([1, 2, 3], [4, 5, 6]).list().toString());
-        var boad = cast(js.Browser.document.getElementById("draw"), CanvasElement);
+        var boad: CanvasElement = cast js.Browser.document.getElementById("draw");
         var life_game = new GameOfLife(boad);
         life_game.start();
     }

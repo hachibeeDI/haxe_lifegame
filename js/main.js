@@ -1,20 +1,10 @@
 (function () { "use strict";
 var $estr = function() { return js.Boot.__string_rec(this,''); };
 var Enumerator = function() { }
-Enumerator.__name__ = true;
 Enumerator.as_enumerable = function(iter) {
 	return { iterator : function() {
 		return iter;
 	}};
-}
-Enumerator.product = function(xs,ys) {
-	return Enumerator.flatmap(Lambda.map(xs,function(x) {
-		return Lambda.map(ys,function(y) {
-			return [x,y];
-		});
-	}),function(i) {
-		return i;
-	});
 }
 Enumerator.flatmap = function(xs,func) {
 	return Lambda.fold(xs,function(xs1,xs2) {
@@ -22,7 +12,6 @@ Enumerator.flatmap = function(xs,func) {
 	},Lambda.list([]));
 }
 var HxOverrides = function() { }
-HxOverrides.__name__ = true;
 HxOverrides.iter = function(a) {
 	return { cur : 0, arr : a, hasNext : function() {
 		return this.cur < this.arr.length;
@@ -34,7 +23,6 @@ var IntIterator = function(min,max) {
 	this.min = min;
 	this.max = max;
 };
-IntIterator.__name__ = true;
 IntIterator.prototype = {
 	next: function() {
 		return this.min++;
@@ -42,10 +30,8 @@ IntIterator.prototype = {
 	,hasNext: function() {
 		return this.min < this.max;
 	}
-	,__class__: IntIterator
 }
 var Lambda = function() { }
-Lambda.__name__ = true;
 Lambda.list = function(it) {
 	var l = new List();
 	var $it0 = $iterator(it)();
@@ -115,7 +101,6 @@ Lambda.concat = function(a,b) {
 var List = function() {
 	this.length = 0;
 };
-List.__name__ = true;
 List.prototype = {
 	map: function(f) {
 		var b = new List();
@@ -143,28 +128,24 @@ List.prototype = {
 		this.q = x;
 		this.length++;
 	}
-	,__class__: List
 }
 var Main = function() { }
-Main.__name__ = true;
 Main.main = function() {
-	var boad = js.Boot.__cast(js.Browser.document.getElementById("draw") , HTMLCanvasElement);
+	var boad = js.Browser.document.getElementById("draw");
 	var life_game = new GameOfLife(boad);
 	life_game.start();
 }
-var Seed = { __ename__ : true, __constructs__ : ["Alive","Dead"] }
+var Seed = { __constructs__ : ["Alive","Dead"] }
 Seed.Alive = function(v) { var $x = ["Alive",0,v]; $x.__enum__ = Seed; $x.toString = $estr; return $x; }
 Seed.Dead = function(v) { var $x = ["Dead",1,v]; $x.__enum__ = Seed; $x.toString = $estr; return $x; }
 var GameOfLife = function(canvas) {
 	this.generation = new Generation(canvas,100);
 };
-GameOfLife.__name__ = true;
 GameOfLife.prototype = {
 	start: function() {
 		this.generation.next();
 		haxe.Timer.delay($bind(this,this.start),100);
 	}
-	,__class__: GameOfLife
 }
 var Generation = function(canvas,tick_length) {
 	this._initialize_canvas(canvas);
@@ -173,7 +154,6 @@ var Generation = function(canvas,tick_length) {
 	this.current_cell_generation = this.seed();
 	this.draw_grid();
 };
-Generation.__name__ = true;
 Generation.prototype = {
 	next: function() {
 		this.draw_grid();
@@ -345,13 +325,8 @@ Generation.prototype = {
 		canvas.width = 560;
 		canvas.height = 560;
 	}
-	,__class__: Generation
 }
 var Std = function() { }
-Std.__name__ = true;
-Std.string = function(s) {
-	return js.Boot.__string_rec(s,"");
-}
 Std.random = function(x) {
 	return x <= 0?0:Math.floor(Math.random() * x);
 }
@@ -362,7 +337,6 @@ haxe.Timer = function(time_ms) {
 		me.run();
 	},time_ms);
 };
-haxe.Timer.__name__ = true;
 haxe.Timer.delay = function(f,time_ms) {
 	var t = new haxe.Timer(time_ms);
 	t.run = function() {
@@ -380,124 +354,9 @@ haxe.Timer.prototype = {
 		clearInterval(this.id);
 		this.id = null;
 	}
-	,__class__: haxe.Timer
 }
 var js = {}
-js.Boot = function() { }
-js.Boot.__name__ = true;
-js.Boot.__string_rec = function(o,s) {
-	if(o == null) return "null";
-	if(s.length >= 5) return "<...>";
-	var t = typeof(o);
-	if(t == "function" && (o.__name__ || o.__ename__)) t = "object";
-	switch(t) {
-	case "object":
-		if(o instanceof Array) {
-			if(o.__enum__) {
-				if(o.length == 2) return o[0];
-				var str = o[0] + "(";
-				s += "\t";
-				var _g1 = 2, _g = o.length;
-				while(_g1 < _g) {
-					var i = _g1++;
-					if(i != 2) str += "," + js.Boot.__string_rec(o[i],s); else str += js.Boot.__string_rec(o[i],s);
-				}
-				return str + ")";
-			}
-			var l = o.length;
-			var i;
-			var str = "[";
-			s += "\t";
-			var _g = 0;
-			while(_g < l) {
-				var i1 = _g++;
-				str += (i1 > 0?",":"") + js.Boot.__string_rec(o[i1],s);
-			}
-			str += "]";
-			return str;
-		}
-		var tostr;
-		try {
-			tostr = o.toString;
-		} catch( e ) {
-			return "???";
-		}
-		if(tostr != null && tostr != Object.toString) {
-			var s2 = o.toString();
-			if(s2 != "[object Object]") return s2;
-		}
-		var k = null;
-		var str = "{\n";
-		s += "\t";
-		var hasp = o.hasOwnProperty != null;
-		for( var k in o ) { ;
-		if(hasp && !o.hasOwnProperty(k)) {
-			continue;
-		}
-		if(k == "prototype" || k == "__class__" || k == "__super__" || k == "__interfaces__" || k == "__properties__") {
-			continue;
-		}
-		if(str.length != 2) str += ", \n";
-		str += s + k + " : " + js.Boot.__string_rec(o[k],s);
-		}
-		s = s.substring(1);
-		str += "\n" + s + "}";
-		return str;
-	case "function":
-		return "<function>";
-	case "string":
-		return o;
-	default:
-		return String(o);
-	}
-}
-js.Boot.__interfLoop = function(cc,cl) {
-	if(cc == null) return false;
-	if(cc == cl) return true;
-	var intf = cc.__interfaces__;
-	if(intf != null) {
-		var _g1 = 0, _g = intf.length;
-		while(_g1 < _g) {
-			var i = _g1++;
-			var i1 = intf[i];
-			if(i1 == cl || js.Boot.__interfLoop(i1,cl)) return true;
-		}
-	}
-	return js.Boot.__interfLoop(cc.__super__,cl);
-}
-js.Boot.__instanceof = function(o,cl) {
-	if(cl == null) return false;
-	switch(cl) {
-	case Int:
-		return (o|0) === o;
-	case Float:
-		return typeof(o) == "number";
-	case Bool:
-		return typeof(o) == "boolean";
-	case String:
-		return typeof(o) == "string";
-	case Dynamic:
-		return true;
-	default:
-		if(o != null) {
-			if(typeof(cl) == "function") {
-				if(o instanceof cl) {
-					if(cl == Array) return o.__enum__ == null;
-					return true;
-				}
-				if(js.Boot.__interfLoop(o.__class__,cl)) return true;
-			}
-		} else return false;
-		if(cl == Class && o.__name__ != null) return true;
-		if(cl == Enum && o.__ename__ != null) return true;
-		return o.__enum__ == cl;
-	}
-}
-js.Boot.__cast = function(o,t) {
-	if(js.Boot.__instanceof(o,t)) return o; else throw "Cannot cast " + Std.string(o) + " to " + Std.string(t);
-}
 js.Browser = function() { }
-js.Browser.__name__ = true;
 function $iterator(o) { if( o instanceof Array ) return function() { return HxOverrides.iter(o); }; return typeof(o.iterator) == 'function' ? $bind(o,o.iterator) : o.iterator; };
 var $_, $fid = 0;
 function $bind(o,m) { if( m == null ) return null; if( m.__id__ == null ) m.__id__ = $fid++; var f; if( o.hx__closures__ == null ) o.hx__closures__ = {}; else f = o.hx__closures__[m.__id__]; if( f == null ) { f = function(){ return f.method.apply(f.scope, arguments); }; f.scope = o; f.method = m; o.hx__closures__[m.__id__] = f; } return f; };
@@ -511,23 +370,6 @@ Math.isFinite = function(i) {
 Math.isNaN = function(i) {
 	return isNaN(i);
 };
-String.prototype.__class__ = String;
-String.__name__ = true;
-Array.prototype.__class__ = Array;
-Array.__name__ = true;
-var Int = { __name__ : ["Int"]};
-var Dynamic = { __name__ : ["Dynamic"]};
-var Float = Number;
-Float.__name__ = ["Float"];
-var Bool = Boolean;
-Bool.__ename__ = ["Bool"];
-var Class = { __name__ : ["Class"]};
-var Enum = { };
-GameOfLife.cellSize = 7;
-GameOfLife.numberOfRows = 80;
-GameOfLife.numberOfColumns = 80;
-GameOfLife.seedProbability = 0.5;
-GameOfLife.tickLength = 100;
 js.Browser.document = typeof window != "undefined" ? window.document : null;
 Main.main();
 })();
